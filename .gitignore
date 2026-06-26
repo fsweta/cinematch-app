@@ -1,0 +1,4 @@
+similarity.pkl
+movies.pkl
+__pycache__/
+*.pyc
