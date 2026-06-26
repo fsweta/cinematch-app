@@ -25,6 +25,16 @@
     <div class="hamburger" id="hamburger">☰</div>
   </nav>
 
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/" class="mobile-link">Home</a>
+    <a href="/movies" class="mobile-link">Movies</a>
+    <a href="/genres" class="mobile-link">Genres</a>
+    <a href="/trending" class="mobile-link">Trending</a>
+    <a href="/toprated" class="mobile-link">Top Rated</a>
+    <a href="/about" class="mobile-link">About</a>
+    <a href="/contact" class="mobile-link">Contact</a>
+  </div>
+
   <section style="padding: 120px 5% 60px; max-width:1300px; margin:0 auto;">
     <h1 style="font-size:2rem; font-weight:900; margin-bottom:8px;">🎬 All Movies</h1>
     <p style="color:#888; margin-bottom:32px;">Browse our complete collection of 5000+ movies</p>
@@ -37,9 +47,15 @@
 
     <div class="movie-grid" id="movieGrid">
       {% for movie in movies %}
-      <div class="movie-card" onclick="window.location='/?movie={{ movie }}'">
-        <div style="aspect-ratio:2/3; background:linear-gradient(135deg,#1a1a1d,#2a2a2e);
-          display:flex; align-items:center; justify-content:center; font-size:2rem;">🎬</div>
+      <div class="movie-card" onclick="window.location='/recommend-page?movie={{ movie }}'">
+        <img 
+          data-src="https://via.placeholder.com/300x450/141414/888?text={{ movie[:10] | urlencode }}"
+          src="https://via.placeholder.com/300x450/1a1a1d/333?text=..."
+          alt="{{ movie }}"
+          class="lazy-poster"
+          style="width:100%; aspect-ratio:2/3; object-fit:cover; display:block;"
+          onerror="this.src='https://via.placeholder.com/300x450/141414/888?text=No+Poster'"
+        />
         <div class="card-body">
           <div class="card-title">{{ movie }}</div>
           <span class="card-badge">Movie</span>
@@ -54,6 +70,7 @@
   </footer>
 
   <script>
+    // Search
     document.getElementById('searchInput').addEventListener('input', function() {
       const val = this.value.toLowerCase();
       document.querySelectorAll('.movie-card').forEach(card => {
@@ -61,11 +78,49 @@
         card.style.display = title.includes(val) ? 'block' : 'none';
       });
     });
+
+    // Dark mode
     document.getElementById('darkToggle').addEventListener('click', () => {
       document.body.style.background = document.body.style.background === 'rgb(245, 245, 245)' ? '#0a0a0a' : '#f5f5f5';
     });
+
+    // Hamburger
     document.getElementById('hamburger').addEventListener('click', () => {
       document.getElementById('mobileMenu')?.classList.toggle('open');
+    });
+
+    // OMDB Poster fetch
+    const OMDB_KEY = 'c09a520b';
+    
+    async function fetchPoster(title, imgEl) {
+      try {
+        const res = await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_KEY}`);
+        const data = await res.json();
+        if (data.Poster && data.Poster !== 'N/A') {
+          imgEl.src = data.Poster;
+        } else {
+          imgEl.src = `https://via.placeholder.com/300x450/141414/888?text=${encodeURIComponent(title.substring(0,15))}`;
+        }
+      } catch {
+        imgEl.src = `https://via.placeholder.com/300x450/141414/888?text=No+Poster`;
+      }
+    }
+
+    // Lazy load — sirf visible cards pe poster fetch karo
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          const title = card.querySelector('.card-title').textContent;
+          const img = card.querySelector('img');
+          fetchPoster(title, img);
+          observer.unobserve(card);
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    document.querySelectorAll('.movie-card').forEach(card => {
+      observer.observe(card);
     });
   </script>
 </body>
