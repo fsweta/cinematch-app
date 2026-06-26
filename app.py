@@ -28,7 +28,7 @@ OMDB_API_KEY = os.environ.get('OMDB_API_KEY', 'c09a520b')
 
 def fetch_poster(title):
     try:
-        url = f"http://www.omdbapi.com/?t={title}&apikey={OMDB_API_KEY}"
+        url = f"https://www.omdbapi.com/?t={title}&apikey={OMDB_API_KEY}"
         response = requests.get(url, timeout=5)
         data = response.json()
         poster = data.get('Poster')
