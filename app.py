@@ -1,13 +1,30 @@
 from flask import Flask, render_template, jsonify, request
 import pickle
 import requests
+import os
+import gdown
 
 app = Flask(__name__)
+
+MOVIES_FILE_ID = "1aHhM_yMwNDRVFQZIg5e3mzJnTTu08wJb"
+SIMILARITY_FILE_ID = "1tCbwik_ssEVQktsoro3hClR85oNe_3Oe"
+
+def download_file(file_id, output):
+    url = f"https://drive.google.com/uc?id={file_id}&export=download&confirm=t"
+    gdown.download(url, output, quiet=False, fuzzy=True)
+
+if not os.path.exists('movies.pkl'):
+    print("Downloading movies.pkl...")
+    download_file(MOVIES_FILE_ID, 'movies.pkl')
+
+if not os.path.exists('similarity.pkl'):
+    print("Downloading similarity.pkl...")
+    download_file(SIMILARITY_FILE_ID, 'similarity.pkl')
 
 movies = pickle.load(open('movies.pkl', 'rb'))
 similarity = pickle.load(open('similarity.pkl', 'rb'))
 
-OMDB_API_KEY = "c09a520b"
+OMDB_API_KEY = os.environ.get('OMDB_API_KEY', 'c09a520b')
 
 def fetch_poster(title):
     try:
@@ -17,9 +34,9 @@ def fetch_poster(title):
         poster = data.get('Poster')
         if poster and poster != "N/A":
             return poster
-        return "/static/no-poster.png"
+        return f"https://via.placeholder.com/300x450/141414/888?text={title.replace(' ', '+')}"
     except:
-        return "/static/no-poster.png"
+        return "https://via.placeholder.com/300x450/141414/888?text=No+Poster"
 
 def recommend(movie):
     try:
@@ -34,8 +51,8 @@ def recommend(movie):
         return recommended
     except:
         return []
-    
-    app.jinja_env.globals.update(enumerate=enumerate)
+
+app.jinja_env.globals.update(enumerate=enumerate)
 
 @app.route('/')
 def home():
@@ -75,8 +92,5 @@ def contact_page():
     return render_template('contact.html')
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
-
-
