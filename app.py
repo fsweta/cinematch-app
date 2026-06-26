@@ -11,7 +11,7 @@ SIMILARITY_FILE_ID = "1tCbwik_ssEVQktsoro3hClR85oNe_3Oe"
 
 def download_file(file_id, output):
     url = f"https://drive.google.com/uc?id={file_id}&export=download&confirm=t"
-    gdown.download(url, output, quiet=False, fuzzy=True)
+    gdown.download(url, output, quiet=False)
 
 if not os.path.exists('movies.pkl'):
     print("Downloading movies.pkl...")
