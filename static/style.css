@@ -768,3 +768,17 @@ body {
   padding: 3px 10px;
   border-radius: 20px;
 }
+
+
+/* MOBILE TOUCH FIX */
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.mobile-link {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 14px 5%;
+}
