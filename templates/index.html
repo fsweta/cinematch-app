@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CineMatch — AI Movie Recommender</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo">🎬 CineMatch</div>
+    <div class="nav-links">
+  <a href="/" class="nav-link active">Home</a>
+  <a href="/movies" class="nav-link">Movies</a>
+  <a href="/genres" class="nav-link">Genres</a>
+  <a href="/trending" class="nav-link">Trending</a>
+  <a href="/toprated" class="nav-link">Top Rated</a>
+  <a href="/about" class="nav-link">About</a>
+  <a href="/contact" class="nav-link">Contact</a>
+</div>
+    <div class="nav-actions">
+      <button class="dark-toggle" id="darkToggle">🌙 Dark Mode</button>
+      <button class="login-btn" id="loginBtn">👤 Login</button>
+    </div>
+    <div class="hamburger" id="hamburger">☰</div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#" class="mobile-link">Home</a>
+    <a href="#" class="mobile-link">Movies</a>
+    <a href="#" class="mobile-link">Genres</a>
+    <a href="#" class="mobile-link">Trending</a>
+    <a href="#" class="mobile-link">Top Rated</a>
+    <a href="#" class="mobile-link">About</a>
+    <a href="#" class="mobile-link">Contact</a>
+  </div>
+
+  <!-- Login Modal (NAVBAR KE BAHAR) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" id="modalClose">✕</button>
+
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="loginTab">Login</button>
+        <button class="modal-tab" id="signupTab">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="modal-form" id="loginForm">
+        <h2 class="modal-title">Welcome Back 👋</h2>
+        <p class="modal-sub">Login to save your recommendations</p>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="Enter your email" />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password" />
+        </div>
+        <button class="modal-btn" id="loginSubmit">🎬 Login</button>
+        <p class="modal-footer-text">Don't have an account? <span class="switch-tab" id="goSignup">Sign Up</span></p>
+        <p style="text-align:center; margin-top:8px;">
+          <span id="closeModalLogin" style="color:#666; font-size:0.8rem; cursor:pointer; text-decoration:underline;">
+            Continue without login →
+          </span>
+        </p>
+      </div>
+
+      <!-- Signup Form -->
+      <div class="modal-form" id="signupForm" style="display:none;">
+        <h2 class="modal-title">Join CineMatch 🎥</h2>
+        <p class="modal-sub">Create your free account today</p>
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="signupName" placeholder="Enter your name" />
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="signupEmail" placeholder="Enter your email" />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="signupPassword" placeholder="Create a password" />
+        </div>
+        <button class="modal-btn" id="signupSubmit">🚀 Create Account</button>
+        <p class="modal-footer-text">Already have an account? <span class="switch-tab" id="goLogin">Login</span></p>
+        <p style="text-align:center; margin-top:8px;">
+          <span id="closeModalSignup" style="color:#666; font-size:0.8rem; cursor:pointer; text-decoration:underline;">
+            Continue without login →
+          </span>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">✨ AI-Powered Recommendations</div>
+      <h1 id="heroHeading">Find Your Next<br/><span class="highlight">Favorite Film</span></h1>
+      <p class="hero-desc" id="heroDesc">Tell us what you loved — our AI finds movies just like it.<br/>
+      Powered by content-based filtering & 5000+ movie dataset.</p>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">5000+</span>
+          <span class="stat-label">Movies</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">AI</span>
+          <span class="stat-label">Powered</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">Free</span>
+          <span class="stat-label">No signup</span>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="movieInput" list="movieList" placeholder="Search a movie you liked..."/>
+        <datalist id="movieList">
+          {% for movie in movies %}
+          <option value="{{ movie }}">
+          {% endfor %}
+        </datalist>
+      </div>
+
+      <div class="hero-btns">
+        <button id="recommendBtn" class="btn-primary">
+          <span id="btnText">🎬 Get Recommendations</span>
+          <span id="btnLoader" style="display:none;">⏳ Finding...</span>
+        </button>
+        <button class="btn-secondary" onclick="document.querySelector('.about-section').scrollIntoView({behavior:'smooth'})">
+          🔥 Explore Trending
+        </button>
+      </div>
+
+      <div class="popular-tags">
+        <span class="tag-label">Popular:</span>
+        <span class="tag" onclick="document.getElementById('movieInput').value='Avatar';document.getElementById('recommendBtn').click()">Avatar</span>
+        <span class="tag" onclick="document.getElementById('movieInput').value='Inception';document.getElementById('recommendBtn').click()">Inception</span>
+        <span class="tag" onclick="document.getElementById('movieInput').value='Titanic';document.getElementById('recommendBtn').click()">Titanic</span>
+        <span class="tag" onclick="document.getElementById('movieInput').value='The Dark Knight';document.getElementById('recommendBtn').click()">The Dark Knight</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="results-section">
+    <div id="resultsHeader" style="display:none;">
+      <h2 class="section-title">Recommended For You</h2>
+      <p class="section-sub" id="resultMovieName"></p>
+    </div>
+    <div class="movie-grid" id="movieGrid"></div>
+    <div class="error-msg" id="errorMsg" style="display:none;">
+      ⚠️ Movie not found. Try another title from the list.
+    </div>
+  </section>
+
+  <!-- Profile Section -->
+  <section class="profile-section" id="profileSection" style="display:none;">
+    <div class="profile-header">
+      <div class="profile-avatar" id="profileAvatar"></div>
+      <div class="profile-info">
+        <h2 id="profileName"></h2>
+        <p id="profileEmail"></p>
+      </div>
+    </div>
+    <div class="profile-grid">
+      <div class="profile-card">
+        <span class="profile-icon">🎬</span>
+        <h3>My Watchlist</h3>
+        <p>Save movies to watch later</p>
+        <span class="profile-count">0 movies</span>
+      </div>
+      <div class="profile-card">
+        <span class="profile-icon">❤️</span>
+        <h3>Favourites</h3>
+        <p>Movies you loved</p>
+        <span class="profile-count">0 movies</span>
+      </div>
+      <div class="profile-card">
+        <span class="profile-icon">⭐</span>
+        <h3>My Ratings</h3>
+        <p>Movies you've rated</p>
+        <span class="profile-count">0 ratings</span>
+      </div>
+      <div class="profile-card">
+        <span class="profile-icon">🔁</span>
+        <h3>Watch History</h3>
+        <p>Recently viewed movies</p>
+        <span class="profile-count">0 movies</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about-section">
+    <div class="about-card">
+      <div class="about-item">
+        <span class="about-icon">🤖</span>
+        <h3>AI-Powered</h3>
+        <p>Content-based filtering using NLP & cosine similarity</p>
+      </div>
+      <div class="about-item">
+        <span class="about-icon">🎯</span>
+        <h3>Accurate</h3>
+        <p>Trained on TMDB 5000 movies dataset</p>
+      </div>
+      <div class="about-item">
+        <span class="about-icon">⚡</span>
+        <h3>Instant</h3>
+        <p>Real-time recommendations powered by Flask</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Built with Flask · Scikit-learn · TMDB Dataset · OMDB API &nbsp;|&nbsp; College Internship Project</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

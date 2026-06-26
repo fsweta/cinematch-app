@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movies — CineMatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-logo">🎬 CineMatch</div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/movies" class="nav-link active">Movies</a>
+      <a href="/genres" class="nav-link">Genres</a>
+      <a href="/trending" class="nav-link">Trending</a>
+      <a href="/toprated" class="nav-link">Top Rated</a>
+      <a href="/about" class="nav-link">About</a>
+      <a href="/contact" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="dark-toggle" id="darkToggle">🌙 Dark Mode</button>
+    </div>
+    <div class="hamburger" id="hamburger">☰</div>
+  </nav>
+
+  <section style="padding: 120px 5% 60px; max-width:1300px; margin:0 auto;">
+    <h1 style="font-size:2rem; font-weight:900; margin-bottom:8px;">🎬 All Movies</h1>
+    <p style="color:#888; margin-bottom:32px;">Browse our complete collection of 5000+ movies</p>
+
+    <div style="margin-bottom:24px;">
+      <input type="text" id="searchInput" placeholder="🔍 Search movies..."
+        style="padding:12px 18px; background:#1a1a1d; border:1px solid #2a2a2a;
+        border-radius:8px; color:#fff; font-size:0.95rem; width:100%; max-width:400px;"/>
+    </div>
+
+    <div class="movie-grid" id="movieGrid">
+      {% for movie in movies %}
+      <div class="movie-card" onclick="window.location='/?movie={{ movie }}'">
+        <div style="aspect-ratio:2/3; background:linear-gradient(135deg,#1a1a1d,#2a2a2e);
+          display:flex; align-items:center; justify-content:center; font-size:2rem;">🎬</div>
+        <div class="card-body">
+          <div class="card-title">{{ movie }}</div>
+          <span class="card-badge">Movie</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Built with Flask · Scikit-learn · TMDB Dataset · OMDB API | College Internship Project</p>
+  </footer>
+
+  <script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const val = this.value.toLowerCase();
+      document.querySelectorAll('.movie-card').forEach(card => {
+        const title = card.querySelector('.card-title').textContent.toLowerCase();
+        card.style.display = title.includes(val) ? 'block' : 'none';
+      });
+    });
+    document.getElementById('darkToggle').addEventListener('click', () => {
+      document.body.style.background = document.body.style.background === 'rgb(245, 245, 245)' ? '#0a0a0a' : '#f5f5f5';
+    });
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('mobileMenu')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

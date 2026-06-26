@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Genres — CineMatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-logo">🎬 CineMatch</div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/movies" class="nav-link">Movies</a>
+      <a href="/genres" class="nav-link active">Genres</a>
+      <a href="/trending" class="nav-link">Trending</a>
+      <a href="/toprated" class="nav-link">Top Rated</a>
+      <a href="/about" class="nav-link">About</a>
+      <a href="/contact" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="dark-toggle" id="darkToggle">🌙 Dark Mode</button>
+    </div>
+    <div class="hamburger" id="hamburger">☰</div>
+  </nav>
+
+  <section style="padding:120px 5% 60px; max-width:1100px; margin:0 auto;">
+    <h1 style="font-size:2rem; font-weight:900; margin-bottom:8px;">🎭 Browse by Genre</h1>
+    <p style="color:#888; margin-bottom:40px;">Pick a genre to explore movies you'll love</p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:20px;">
+      {% set genres = [
+        ('🎬', 'Action', '#e50914'),
+        ('😂', 'Comedy', '#f5c518'),
+        ('💔', 'Drama', '#8b5cf6'),
+        ('👻', 'Horror', '#1f1f1f'),
+        ('🚀', 'Sci-Fi', '#3b82f6'),
+        ('💕', 'Romance', '#ec4899'),
+        ('🔪', 'Thriller', '#f97316'),
+        ('🧸', 'Animation', '#10b981'),
+        ('🏔️', 'Adventure', '#06b6d4'),
+        ('🔍', 'Mystery', '#6b7280'),
+        ('🎵', 'Musical', '#d946ef'),
+        ('📜', 'History', '#92400e')
+      ] %}
+      {% for icon, name, color in genres %}
+      <div onclick="window.location='/movies'"
+        style="background:#141414; border:1px solid #2a2a2a; border-radius:12px;
+        padding:28px 20px; text-align:center; cursor:pointer;
+        transition:all 0.2s; border-top: 3px solid {{ color }};"
+        onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 12px 30px rgba(0,0,0,0.4)'"
+        onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:2.5rem; margin-bottom:10px;">{{ icon }}</div>
+        <div style="font-weight:700; font-size:1rem;">{{ name }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Built with Flask · Scikit-learn · TMDB Dataset | College Internship Project</p>
+  </footer>
+</body>
+</html>

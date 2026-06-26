@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Top Rated — CineMatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-logo">🎬 CineMatch</div>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/movies" class="nav-link">Movies</a>
+      <a href="/genres" class="nav-link">Genres</a>
+      <a href="/trending" class="nav-link">Trending</a>
+      <a href="/toprated" class="nav-link active">Top Rated</a>
+      <a href="/about" class="nav-link">About</a>
+      <a href="/contact" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="dark-toggle">🌙 Dark Mode</button>
+    </div>
+  </nav>
+
+  <section style="padding:120px 5% 60px; max-width:1200px; margin:0 auto;">
+    <h1 style="font-size:2rem; font-weight:900; margin-bottom:8px;">⭐ Top Rated Movies</h1>
+    <p style="color:#888; margin-bottom:40px;">Highest rated films of all time</p>
+
+    <div class="movie-grid">
+      {% set toprated = [
+        ('The Shawshank Redemption', '9.3'),
+        ('The Godfather', '9.2'),
+        ('The Dark Knight', '9.0'),
+        ('Schindler\'s List', '8.9'),
+        ('Pulp Fiction', '8.9'),
+        ('The Lord of the Rings', '8.8'),
+        ('Forrest Gump', '8.8'),
+        ('Inception', '8.7'),
+        ('Fight Club', '8.7'),
+        ('Goodfellas', '8.7'),
+        ('The Matrix', '8.6'),
+        ('Interstellar', '8.6')
+      ] %}
+      {% for movie, rating in toprated %}
+      <div class="movie-card">
+        <div style="aspect-ratio:2/3; background:linear-gradient(135deg,#1a1a1d,#2a2a2e);
+          display:flex; align-items:center; justify-content:center; font-size:2.5rem;">🎬</div>
+        <div class="card-body">
+          <div class="card-title">{{ movie }}</div>
+          <span class="card-badge">⭐ {{ rating }}/10</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Built with Flask · Scikit-learn · TMDB Dataset | College Internship Project</p>
+  </footer>
+</body>
+</html>
